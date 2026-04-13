@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Freelance Compass helps beginner freelance web developers compare services, estimate pricing, and evaluate project fit."
+    />
+    <title>Freelance Compass</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="#home" class="brand">Freelance Compass</a>
+
+        <nav class="site-nav" aria-label="Primary">
+          <a href="#home">Overview</a>
+          <a href="#services">Services</a>
+          <a href="#calculator">Calculator</a>
+        </nav>
+
+        <a href="#calculator" class="button button-primary">Start Estimate</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="home" class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Freelance pricing assistant</p>
+            <h1>Price with confidence. Build with clarity.</h1>
+            <p class="hero-text">
+              Compare freelance web services, estimate pricing, and decide
+              whether a client project is worth accepting before you commit.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#services" class="button button-primary"
+                >Explore Pricing Data</a
+              >
+              <a href="#calculator" class="button button-secondary"
+                >Open Calculator</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="feature-strip" aria-label="Core features">
+        <div class="container feature-grid">
+          <article class="feature-card">
+            <p class="feature-icon" aria-hidden="true">01</p>
+            <h2>Market Rate Data</h2>
+            <p>
+              Compare common freelance web services with pricing benchmarks and
+              scope signals.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <p class="feature-icon" aria-hidden="true">02</p>
+            <h2>Pricing Calculator</h2>
+            <p>
+              Estimate a fair project range using budget, timeline, complexity,
+              and add-ons.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <p class="feature-icon" aria-hidden="true">03</p>
+            <h2>Project Evaluation</h2>
+            <p>
+              Review project fit and decide whether to accept, renegotiate, or
+              decline.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="insights-section" aria-labelledby="insights-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Live widget</p>
+            <h2 id="insights-heading">Live Industry Insights</h2>
+            <p>
+              Recent web topics that may influence client demand, service value,
+              and project expectations.
+            </p>
+          </div>
+
+          <div class="insights-toolbar" aria-label="Insight filters">
+            <button type="button" class="tag-filter is-active" data-tag="all">
+              All
+            </button>
+            <button type="button" class="tag-filter" data-tag="webdev">
+              Webdev
+            </button>
+            <button type="button" class="tag-filter" data-tag="javascript">
+              JavaScript
+            </button>
+            <button type="button" class="tag-filter" data-tag="css">
+              CSS
+            </button>
+          </div>
+
+          <div class="insights-panel">
+            <p class="widget-status" id="insights-status">
+              Loading industry insights...
+            </p>
+            <div id="insights-list" class="insights-list" aria-live="polite">
+              <!-- Live insight cards will be rendered here in a later step. -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="services"
+        class="services-section"
+        aria-labelledby="services-heading"
+      >
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Local data gallery</p>
+            <h2 id="services-heading">Service Comparison</h2>
+            <p>
+              Browse common freelance web services with estimated pricing,
+              timelines, and scope signals.
+            </p>
+          </div>
+
+          <div class="services-toolbar">
+            <div class="form-control">
+              <label class="sr-only" for="service-search"
+                >Search services</label
+              >
+              <input
+                id="service-search"
+                name="serviceSearch"
+                type="search"
+                placeholder="Search services..."
+              />
+            </div>
+
+            <div class="form-control">
+              <label class="sr-only" for="service-filter"
+                >Filter services</label
+              >
+              <select id="service-filter" name="serviceFilter">
+                <option value="all">All categories</option>
+                <option value="marketing">Marketing</option>
+                <option value="business">Business</option>
+                <option value="optimization">Optimization</option>
+                <option value="support">Support</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="sr-only" for="service-sort">Sort services</label>
+              <select id="service-sort" name="serviceSort">
+                <option value="default">Sort by relevance</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="timeline-fast">Fastest timeline</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="services-grid" class="services-grid" aria-live="polite">
+            <!-- Service cards will be rendered here from local data in a later step. -->
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="calculator"
+        class="calculator-section"
+        aria-labelledby="calculator-heading"
+      >
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Decision engine</p>
+            <h2 id="calculator-heading">Pricing Calculator</h2>
+            <p>
+              Estimate a fair range and assess whether a project is worth
+              accepting.
+            </p>
+          </div>
+
+          <div class="calculator-grid">
+            <article class="calculator-card">
+              <h3>Project Details</h3>
+
+              <form id="calculator-form" novalidate>
+                <div class="form-group">
+                  <label for="service-type">Project Type</label>
+                  <select id="service-type" name="serviceType">
+                    <option value="">Select a service</option>
+                  </select>
+                  <p class="error-message" id="service-type-error"></p>
+                </div>
+
+                <div class="form-group">
+                  <label for="estimated-pages">Estimated Pages</label>
+                  <input
+                    id="estimated-pages"
+                    name="estimatedPages"
+                    type="number"
+                    min="1"
+                    placeholder="e.g. 5"
+                  />
+                  <p class="error-message" id="estimated-pages-error"></p>
+                </div>
+
+                <div class="form-group">
+                  <label for="budget">Client Budget</label>
+                  <input
+                    id="budget"
+                    name="budget"
+                    type="number"
+                    min="0"
+                    step="50"
+                    placeholder="e.g. 1500"
+                  />
+                  <p class="error-message" id="budget-error"></p>
+                </div>
+
+                <fieldset class="form-group">
+                  <legend>Project Complexity</legend>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="complexity"
+                      value="basic"
+                    />
+                    Basic
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="complexity"
+                      value="medium"
+                    />
+                    Medium
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="complexity"
+                      value="advanced"
+                    />
+                    Advanced
+                  </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <legend>Timeline Urgency</legend>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="timelineUrgency"
+                      value="flexible"
+                    />
+                    Flexible timeline
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="timelineUrgency"
+                      value="soon"
+                    />
+                    Needed soon
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="timelineUrgency"
+                      value="rush"
+                    />
+                    Rush project
+                  </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <legend>Included Work</legend>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="includedWork"
+                      value="design"
+                    />
+                    Design included
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="includedWork"
+                      value="content"
+                    />
+                    Content support included
+                  </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <legend>Extra Services</legend>
+
+                  <label>
+                    <input type="checkbox" name="extras" value="seo" />
+                    SEO setup
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="extras"
+                      value="accessibility"
+                    />
+                    Accessibility improvements
+                  </label>
+
+                  <label>
+                    <input type="checkbox" name="extras" value="cms" />
+                    CMS setup
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="extras"
+                      value="performance"
+                    />
+                    Performance optimization
+                  </label>
+                </fieldset>
+
+                <div class="form-group">
+                  <label for="client-revisions">Client Revisions</label>
+                  <select id="client-revisions" name="clientRevisions">
+                    <option value="">Select revision level</option>
+                    <option value="1">1 round</option>
+                    <option value="2">2 rounds</option>
+                    <option value="3">3+ rounds</option>
+                  </select>
+                  <p class="error-message" id="client-revisions-error"></p>
+                </div>
+
+                <button type="submit" class="button button-primary">
+                  Calculate Recommendation
+                </button>
+              </form>
+            </article>
+
+            <aside class="results-card" aria-live="polite">
+              <h3>Recommendation</h3>
+
+              <div class="result-block">
+                <p class="result-label">Estimated Price Range</p>
+                <p id="result-price-range" class="result-value">$0 - $0</p>
+              </div>
+
+              <div class="result-block">
+                <p class="result-label">Budget Assessment</p>
+                <p id="result-budget">
+                  Enter project details to compare budget fit.
+                </p>
+              </div>
+
+              <div class="result-block">
+                <p class="result-label">Timeline Assessment</p>
+                <p id="result-timeline">
+                  Timeline evaluation will appear here.
+                </p>
+              </div>
+
+              <div class="result-block">
+                <p class="result-label">Scope Assessment</p>
+                <p id="result-scope">
+                  Scope evaluation will appear here.
+                </p>
+              </div>
+
+              <div class="result-block result-highlight">
+                <p class="result-label">Recommendation</p>
+                <p id="result-label" class="result-status">Waiting for input</p>
+                <p id="result-message">
+                  Complete the calculator to receive a project-fit
+                  recommendation.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <p class="footer-brand">Freelance Compass</p>
+          <p>
+            A pricing and project-fit tool for beginner freelance web
+            developers.
+          </p>
+        </div>
+
+        <div>
+          <p class="footer-heading">Product</p>
+          <a href="#services">Services</a>
+          <a href="#calculator">Calculator</a>
+        </div>
+
+        <div>
+          <p class="footer-heading">Resources</p>
+          <a href="README.md">README</a>
+          <a href="NOTES.md">Notes</a>
+        </div>
+
+        <div>
+          <p class="footer-heading">Connect</p>
+          <a href="https://github.com/noomenbm/webfun-final">GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

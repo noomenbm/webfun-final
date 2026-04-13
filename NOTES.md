@@ -219,6 +219,89 @@ These are easier technically, but they do not contribute as much to the identity
 
 ---
 
+## DEV.to / Forem API Research
+
+### Current decision
+
+For the class version of this project, the live widget will likely use public DEV / Forem article endpoints as a short-term solution.
+
+Reason:
+
+* the endpoints appear to return recent tagged articles in the browser right now
+* this is fast to implement for a frontend-only class project
+* the widget is a supporting feature, not the core of the app
+
+Long-term note:
+
+* this may not be the final production approach
+* if needed later, the app can move API requests behind a small Vercel serverless function
+* a more stable or secured source may replace this after the class submission
+
+### Known API notes so far
+
+Research so far suggests:
+
+* DEV / Forem has official API docs
+* some newer API docs mention headers and API keys for versioned API access
+* however, some public article endpoints currently appear to work in the browser without a key
+
+Important caution:
+
+* just because an endpoint works right now does not guarantee it will remain the best long-term option
+* for this class project, it is acceptable as a proof of concept if the endpoint is working during development and submission
+
+### Planned widget approach
+
+Do not fetch every article available.
+
+Instead:
+
+* fetch a small number of recent articles from selected relevant tags
+* combine them into one local array in JavaScript
+* display only a few items at a time, such as 4 to 6
+* allow the user to filter the already-fetched items by tag in the UI
+
+This should be faster and cleaner than requesting large amounts of content.
+
+### Tag ideas
+
+Possible relevant tags:
+
+* `webdev`
+* `javascript`
+* `css`
+* `frontend`
+* other tags related to freelance web work, if useful results exist
+
+### Expected fields to use in the widget
+
+The widget will probably only need a few fields from each article:
+
+* `title`
+* `url`
+* `tag` or tags
+* `published date`
+* `author` or source
+
+### UI idea
+
+Widget concept:
+
+* title like `Live Industry Insights`
+* small set of article cards or list items
+* tag filter buttons such as `All`, `Webdev`, `JavaScript`, `CSS`
+* external links to read the full article
+
+### Implementation reminders
+
+* use a loading state before the articles appear
+* handle empty results
+* handle fetch errors gracefully
+* consider deduplicating articles if the same item appears under multiple tags
+* keep a fallback message ready if the live feed becomes unavailable
+
+---
+
 ## Error Handling Notes
 
 The live widget should account for these states:
