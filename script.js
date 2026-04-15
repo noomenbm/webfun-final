@@ -106,3 +106,54 @@ const serviceCatalog = [
     tags: ["seo", "metadata", "local"],
   },
 ];
+
+const servicesGrid = document.querySelector("#services-grid");
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function renderServiceGallery(services) {
+  servicesGrid.innerHTML = services
+    .map(
+      (service) => `
+        <article class="service-card">
+          <div class="service-card-top">
+            <p class="service-category">${service.category}</p>
+            <p class="service-price">${formatCurrency(service.startingPrice)}+</p>
+          </div>
+
+          <h3>${service.title}</h3>
+          <p class="service-description">${service.description}</p>
+
+          <dl class="service-meta">
+            <div>
+              <dt>Difficulty</dt>
+              <dd>${service.difficulty}</dd>
+            </div>
+            <div>
+              <dt>Timeline</dt>
+              <dd>${service.typicalTimeline}</dd>
+            </div>
+            <div>
+              <dt>Recommended For</dt>
+              <dd>${service.recommendedFor}</dd>
+            </div>
+          </dl>
+
+          <ul class="service-deliverables" aria-label="${service.title} deliverables">
+            ${service.deliverables
+              .map((deliverable) => `<li>${deliverable}</li>`)
+              .join("")}
+          </ul>
+        </article>
+      `
+    )
+    .join("");
+}
+
+renderServiceGallery(serviceCatalog);
