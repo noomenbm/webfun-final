@@ -7,12 +7,20 @@
       name="description"
       content="Freelance Compass helps beginner freelance web developers compare services, estimate pricing, and evaluate project fit."
     />
+    <link rel="stylesheet" href="styles.css" />
     <title>Freelance Compass</title>
   </head>
   <body>
     <header class="site-header">
       <div class="container header-inner">
-        <a href="#home" class="brand">Freelance Compass</a>
+        <a href="#home" class="brand">
+          <img
+            src="assets/images/branding/freelance-compass-logo.png"
+            alt=""
+            class="brand-logo"
+          />
+          <span>Freelance Compass</span>
+        </a>
 
         <nav class="site-nav" aria-label="Primary">
           <a href="#home">Overview</a>
@@ -50,17 +58,10 @@
       <section class="feature-strip" aria-label="Core features">
         <div class="container feature-grid">
           <article class="feature-card">
-            <p class="feature-icon" aria-hidden="true">01</p>
-            <h2>Market Rate Data</h2>
-            <p>
-              Compare common freelance web services with pricing benchmarks and
-              scope signals.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <p class="feature-icon" aria-hidden="true">02</p>
-            <h2>Pricing Calculator</h2>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">01</span>
+              <h2>Pricing Calculator</h2>
+            </div>
             <p>
               Estimate a fair project range using budget, timeline, complexity,
               and add-ons.
@@ -68,8 +69,21 @@
           </article>
 
           <article class="feature-card">
-            <p class="feature-icon" aria-hidden="true">03</p>
-            <h2>Project Evaluation</h2>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">02</span>
+              <h2>Market Rate Data</h2>
+            </div>
+            <p>
+              Compare common freelance web services with pricing benchmarks and
+              scope signals.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">03</span>
+              <h2>Project Evaluation</h2>
+            </div>
             <p>
               Review project fit and decide whether to accept, renegotiate, or
               decline.
@@ -81,7 +95,6 @@
       <section class="insights-section" aria-labelledby="insights-heading">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Live widget</p>
             <h2 id="insights-heading">Live Industry Insights</h2>
             <p>
               Recent web topics that may influence client demand, service value,
@@ -122,7 +135,6 @@
       >
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Local data gallery</p>
             <h2 id="services-heading">Service Comparison</h2>
             <p>
               Browse common freelance web services with estimated pricing,
@@ -427,6 +439,7 @@
         <div>
           <p class="footer-heading">Connect</p>
           <a href="https://github.com/noomenbm/webfun-final">GitHub</a>
+          <a href="https://www.linkedin.com/in/noomenbm/">LinkedIn</a>
         </div>
       </div>
     </footer>
