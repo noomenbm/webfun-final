@@ -420,6 +420,7 @@ textarea:focus-visible {
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: start;
   gap: var(--space-4);
   min-height: 14rem;
   padding: var(--space-3);
@@ -430,12 +431,23 @@ textarea:focus-visible {
 
 .service-card {
   display: grid;
+  align-self: start;
   gap: var(--space-3);
   padding: var(--space-4);
   border: 1px solid var(--line);
   background: var(--surface);
   box-shadow: var(--shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.service-card > h3 {
+  line-height: 1.1;
+  min-height: 2.2em;
+  line-clamp: 2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .service-card:hover {
@@ -446,13 +458,14 @@ textarea:focus-visible {
 .service-card-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .service-category,
 .service-price,
-.service-meta dt {
+.service-timeline,
+.service-meta-label {
   margin: 0;
   color: var(--muted);
   font-size: 0.78rem;
@@ -461,7 +474,8 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
-.service-category {
+.service-category,
+.service-timeline {
   display: inline-flex;
   width: fit-content;
   padding: 0.35rem 0.65rem;
@@ -471,6 +485,10 @@ textarea:focus-visible {
 
 .service-price {
   color: var(--ink);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
 }
 
 .service-description {
@@ -479,17 +497,99 @@ textarea:focus-visible {
 }
 
 .service-meta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.service-meta-label,
+.service-meta-value {
+  margin: 0;
+  font-size: 0.72rem;
+}
+
+.service-meta-value {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.service-details {
+  display: grid;
+  border-top: 1px solid rgba(31, 28, 23, 0.08);
+  padding-top: var(--space-3);
+}
+
+.service-details summary {
+  order: 2;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--ink);
+  font-weight: 700;
+  list-style: none;
+}
+
+.service-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.service-details summary::after {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-0.08rem) rotate(45deg);
+  transition: transform 180ms ease;
+}
+
+.service-details[open] summary::after {
+  transform: translateY(0.08rem) rotate(225deg);
+}
+
+.service-details-content {
+  order: 1;
+  display: block;
+  height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  opacity: 0;
+  will-change: height, opacity;
+}
+
+.service-details[open] .service-details-content {
+  opacity: 1;
+}
+
+.service-details-inner {
+  display: grid;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+
+.service-details-meta {
   display: grid;
   gap: var(--space-2);
   margin: 0;
 }
 
-.service-meta div {
+.service-details-meta div {
   display: grid;
   gap: 0.2rem;
 }
 
-.service-meta dd {
+.service-details-meta dt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.service-details-meta dd {
   margin: 0;
   color: var(--ink);
 }
@@ -749,7 +849,6 @@ fieldset.form-group input {
 
   .service-card-top {
     align-items: flex-start;
-    flex-direction: column;
   }
 
   .calculator-card,
@@ -757,5 +856,9 @@ fieldset.form-group input {
   .feature-card,
   .insights-panel {
     padding: var(--space-4);
+  }
+
+  .service-card > h3 {
+    min-height: auto;
   }
 }

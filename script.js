@@ -1,7 +1,8 @@
 "use strict";
 
-const servicesDataURL =
-  "https://noomenbm.github.io/webfun-final/data/services.json";
+// Local project data served from the same site.
+const servicesDataURL = "./data/services.json";
+
 
 const servicesGrid = document.querySelector("#services-grid");
 const serviceSearchInput = document.querySelector("#service-search");
@@ -48,38 +49,50 @@ function renderServiceGallery(services) {
     .map(
       (service) => `
         <article class="service-card">
+          <h3>${service.title}</h3>
+
           <div class="service-card-top">
-            <p class="service-category">${service.category}</p>
             <p class="service-price">${formatCurrency(service.startingPrice)}+</p>
+            <p class="service-timeline">${service.typicalTimeline}</p>
           </div>
 
-          <h3>${service.title}</h3>
-          <p class="service-description">${service.description}</p>
-
           <dl class="service-meta">
-            <div>
-              <dt>Difficulty</dt>
-              <dd>${service.difficulty}</dd>
-            </div>
-            <div>
-              <dt>Timeline</dt>
-              <dd>${service.typicalTimeline}</dd>
-            </div>
-            <div>
-              <dt>Recommended For</dt>
-              <dd>${service.recommendedFor}</dd>
-            </div>
+            <dt class="service-meta-label">Complexity:</dt>
+            <dd class="service-meta-value">${service.difficulty}</dd>
           </dl>
 
-          <ul class="service-deliverables" aria-label="${service.title} deliverables">
-            ${service.deliverables
-              .map((deliverable) => `<li>${deliverable}</li>`)
-              .join("")}
-          </ul>
+          <details class="service-details">
+            <summary>View details</summary>
+
+            <div class="service-details-content">
+              <div class="service-details-inner">
+                <dl class="service-details-meta">
+                  <div>
+                    <dt>Recommended for</dt>
+                    <dd>${service.recommendedFor}</dd>
+                  </div>
+                  <div>
+                    <dt>Category</dt>
+                    <dd>${service.category}</dd>
+                  </div>
+                </dl>
+
+                <p class="service-description">${service.description}</p>
+
+                <ul class="service-deliverables" aria-label="${service.title} deliverables">
+                  ${service.deliverables
+                    .map((deliverable) => `<li>${deliverable}</li>`)
+                    .join("")}
+                </ul>
+              </div>
+            </div>
+          </details>
         </article>
       `
     )
     .join("");
+
+  setupServiceDetailAnimations();
 }
 
 function getVisibleServices() {
@@ -133,6 +146,85 @@ function getVisibleServices() {
 
 function updateServiceGallery() {
   renderServiceGallery(getVisibleServices());
+}
+
+function setupServiceDetailAnimations() {
+  const serviceDetailsElements = document.querySelectorAll(".service-details");
+
+  serviceDetailsElements.forEach((detailsElement) => {
+    const summaryElement = detailsElement.querySelector("summary");
+    const contentElement = detailsElement.querySelector(".service-details-content");
+    const innerElement = detailsElement.querySelector(".service-details-inner");
+
+    if (
+      !summaryElement ||
+      !contentElement ||
+      !innerElement ||
+      summaryElement.dataset.animationBound === "true"
+    ) {
+      return;
+    }
+
+    summaryElement.dataset.animationBound = "true";
+    contentElement.style.height = "0px";
+    contentElement.style.opacity = "0";
+    contentElement.style.marginBottom = "0px";
+
+    summaryElement.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (contentElement.dataset.animating === "true") {
+        return;
+      }
+
+      const isOpening = !detailsElement.open;
+      contentElement.dataset.animating = "true";
+
+      if (isOpening) {
+        detailsElement.open = true;
+        contentElement.style.transition = "none";
+        contentElement.style.height = "0px";
+        contentElement.style.opacity = "0";
+        contentElement.style.marginBottom = "0px";
+        void contentElement.offsetHeight;
+        contentElement.style.transition =
+          "height 650ms ease, opacity 360ms ease, margin-bottom 650ms ease";
+        contentElement.style.height = `${innerElement.scrollHeight}px`;
+        contentElement.style.opacity = "1";
+        contentElement.style.marginBottom = "1rem";
+      } else {
+        const currentHeight = innerElement.scrollHeight;
+        contentElement.style.transition = "none";
+        contentElement.style.height = `${currentHeight}px`;
+        contentElement.style.opacity = "1";
+        contentElement.style.marginBottom = "1rem";
+        void contentElement.offsetHeight;
+        contentElement.style.transition =
+          "height 650ms ease, opacity 320ms ease, margin-bottom 650ms ease";
+        contentElement.style.height = "0px";
+        contentElement.style.opacity = "0";
+        contentElement.style.marginBottom = "0px";
+      }
+
+      const handleTransitionEnd = (transitionEvent) => {
+        if (transitionEvent.propertyName !== "height") {
+          return;
+        }
+
+        contentElement.removeEventListener("transitionend", handleTransitionEnd);
+        contentElement.dataset.animating = "false";
+
+        if (isOpening) {
+          contentElement.style.height = "auto";
+        } else {
+          detailsElement.open = false;
+          contentElement.style.height = "0px";
+        }
+      };
+
+      contentElement.addEventListener("transitionend", handleTransitionEnd);
+    });
+  });
 }
 
 async function loadServiceCatalog() {
