@@ -211,7 +211,7 @@ button {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 44rem);
+  grid-template-columns: minmax(0, 55rem);
   align-items: center;
   min-height: clamp(20rem, 54vh, 34rem);
 }
@@ -237,7 +237,7 @@ h3 {
 }
 
 h1 {
-  max-width: 10ch;
+  max-width: 21ch;
   font-size: clamp(2.75rem, 8vw, 5.5rem);
 }
 
@@ -419,7 +419,7 @@ textarea:focus-visible {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-4);
   min-height: 14rem;
   padding: var(--space-3);

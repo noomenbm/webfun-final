@@ -1,113 +1,13 @@
 "use strict";
 
-const serviceCatalog = [
-  {
-    id: 1,
-    title: "Landing Page",
-    category: "marketing",
-    description:
-      "A focused single-page website designed to capture leads or support a campaign.",
-    difficulty: "Basic",
-    typicalTimeline: "1 week",
-    startingPrice: 650,
-    recommendedFor: "Small launches and personal offers",
-    deliverables: ["Hero section", "Call-to-action section", "Contact form"],
-    tags: ["copy", "conversion", "marketing"],
-  },
-  {
-    id: 2,
-    title: "Portfolio Website",
-    category: "business",
-    description:
-      "A polished personal site that highlights projects, services, and contact information.",
-    difficulty: "Basic",
-    typicalTimeline: "1 to 2 weeks",
-    startingPrice: 900,
-    recommendedFor: "Freelancers, creators, and job seekers",
-    deliverables: ["About page", "Project gallery", "Contact page"],
-    tags: ["branding", "showcase", "content"],
-  },
-  {
-    id: 3,
-    title: "Small Business Website",
-    category: "business",
-    description:
-      "A multi-page website for businesses that need services, trust signals, and inquiries.",
-    difficulty: "Medium",
-    typicalTimeline: "2 to 3 weeks",
-    startingPrice: 1800,
-    recommendedFor: "Local businesses building credibility online",
-    deliverables: ["Service pages", "Testimonials", "Inquiry form"],
-    tags: ["business", "multi-page", "seo"],
-  },
-  {
-    id: 4,
-    title: "Blog / CMS Build",
-    category: "business",
-    description:
-      "A content-focused website with editable posts, page templates, and publishing support.",
-    difficulty: "Advanced",
-    typicalTimeline: "3 to 4 weeks",
-    startingPrice: 2400,
-    recommendedFor: "Brands that publish articles or updates regularly",
-    deliverables: ["CMS setup", "Post template", "Category structure"],
-    tags: ["cms", "content", "templates"],
-  },
-  {
-    id: 5,
-    title: "Website Maintenance",
-    category: "support",
-    description:
-      "Ongoing support for updates, bug fixes, content changes, and general site care.",
-    difficulty: "Basic",
-    typicalTimeline: "Ongoing",
-    startingPrice: 350,
-    recommendedFor: "Clients with an existing website that needs upkeep",
-    deliverables: ["Monthly updates", "Bug fixes", "Content edits"],
-    tags: ["retainer", "support", "updates"],
-  },
-  {
-    id: 6,
-    title: "Accessibility Audit",
-    category: "optimization",
-    description:
-      "A review of usability barriers with prioritized recommendations for accessible improvements.",
-    difficulty: "Medium",
-    typicalTimeline: "1 to 2 weeks",
-    startingPrice: 1100,
-    recommendedFor: "Teams improving accessibility and inclusivity",
-    deliverables: ["Audit report", "Issue summary", "Fix recommendations"],
-    tags: ["a11y", "audit", "compliance"],
-  },
-  {
-    id: 7,
-    title: "Performance Optimization",
-    category: "optimization",
-    description:
-      "A targeted performance pass to improve loading speed and overall frontend efficiency.",
-    difficulty: "Advanced",
-    typicalTimeline: "1 to 2 weeks",
-    startingPrice: 1350,
-    recommendedFor: "Sites with slow load times or weak mobile performance",
-    deliverables: ["Performance review", "Optimization fixes", "Improvement notes"],
-    tags: ["speed", "optimization", "frontend"],
-  },
-  {
-    id: 8,
-    title: "SEO Setup",
-    category: "marketing",
-    description:
-      "A baseline search optimization package that helps a site become more discoverable.",
-    difficulty: "Medium",
-    typicalTimeline: "1 week",
-    startingPrice: 750,
-    recommendedFor: "Small businesses and service providers",
-    deliverables: ["Metadata setup", "Search checklist", "Page recommendations"],
-    tags: ["seo", "metadata", "local"],
-  },
-];
+const servicesDataURL =
+  "https://noomenbm.github.io/webfun-final/data/services.json";
 
 const servicesGrid = document.querySelector("#services-grid");
+const serviceSearchInput = document.querySelector("#service-search");
+const serviceFilterSelect = document.querySelector("#service-filter");
+const serviceSortSelect = document.querySelector("#service-sort");
+let serviceCatalog = [];
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-CA", {
@@ -117,7 +17,33 @@ function formatCurrency(amount) {
   }).format(amount);
 }
 
+function getTimelineValue(timelineText) {
+  if (timelineText.toLowerCase() === "ongoing") {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const numericParts = timelineText.match(/\d+/g);
+
+  if (!numericParts) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return Number(numericParts[0]);
+}
+
 function renderServiceGallery(services) {
+  if (!services.length) {
+    servicesGrid.innerHTML = `
+      <article class="service-card">
+        <h3>No matching services</h3>
+        <p class="service-description">
+          Try a different search term or category.
+        </p>
+      </article>
+    `;
+    return;
+  }
+
   servicesGrid.innerHTML = services
     .map(
       (service) => `
@@ -156,4 +82,83 @@ function renderServiceGallery(services) {
     .join("");
 }
 
-renderServiceGallery(serviceCatalog);
+function getVisibleServices() {
+  const searchTerm = serviceSearchInput.value.trim().toLowerCase();
+  const selectedCategory = serviceFilterSelect.value;
+  const selectedSort = serviceSortSelect.value;
+
+  const filteredServices = serviceCatalog.filter((service) => {
+    const matchesSearch =
+      !searchTerm ||
+      service.title.toLowerCase().includes(searchTerm) ||
+      service.description.toLowerCase().includes(searchTerm) ||
+      service.recommendedFor.toLowerCase().includes(searchTerm) ||
+      service.tags.some((tag) => tag.toLowerCase().includes(searchTerm));
+
+    const matchesCategory =
+      selectedCategory === "all" || service.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const sortedServices = [...filteredServices];
+
+  switch (selectedSort) {
+    case "price-low":
+      sortedServices.sort((firstService, secondService) => {
+        return firstService.startingPrice - secondService.startingPrice;
+      });
+      break;
+    case "price-high":
+      sortedServices.sort((firstService, secondService) => {
+        return secondService.startingPrice - firstService.startingPrice;
+      });
+      break;
+    case "timeline-fast":
+      sortedServices.sort((firstService, secondService) => {
+        return (
+          getTimelineValue(firstService.typicalTimeline) -
+          getTimelineValue(secondService.typicalTimeline)
+        );
+      });
+      break;
+    default:
+      sortedServices.sort((firstService, secondService) => {
+        return firstService.id - secondService.id;
+      });
+  }
+
+  return sortedServices;
+}
+
+function updateServiceGallery() {
+  renderServiceGallery(getVisibleServices());
+}
+
+async function loadServiceCatalog() {
+  try {
+    const response = await fetch(servicesDataURL);
+
+    if (!response.ok) {
+      throw new Error("Unable to load service data.");
+    }
+
+    serviceCatalog = await response.json();
+    updateServiceGallery();
+  } catch (error) {
+    servicesGrid.innerHTML = `
+      <article class="service-card">
+        <h3>Service data unavailable</h3>
+        <p class="service-description">
+          The local service catalog could not be loaded right now.
+        </p>
+      </article>
+    `;
+  }
+}
+
+serviceSearchInput.addEventListener("input", updateServiceGallery);
+serviceFilterSelect.addEventListener("change", updateServiceGallery);
+serviceSortSelect.addEventListener("change", updateServiceGallery);
+
+loadServiceCatalog();
