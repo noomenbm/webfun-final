@@ -110,10 +110,6 @@ function renderServiceGallery(services) {
                     <dt>Recommended for</dt>
                     <dd>${service.recommendedFor}</dd>
                   </div>
-                  <div>
-                    <dt>Category</dt>
-                    <dd>${service.category}</dd>
-                  </div>
                 </dl>
 
                 <p class="service-description">${service.description}</p>
@@ -123,6 +119,10 @@ function renderServiceGallery(services) {
                     .map((deliverable) => `<li>${deliverable}</li>`)
                     .join("")}
                 </ul>
+                <div>
+                  <dt>Category</dt>
+                  <dd>${service.category}</dd>
+                </div>
               </div>
             </div>
           </details>
@@ -481,6 +481,61 @@ function revealCalculatorResults() {
 function setupServiceDetailAnimations() {
   const serviceDetailsElements = document.querySelectorAll(".service-details");
 
+  function animateOpen(detailsElement, contentElement, innerElement) {
+    contentElement.dataset.animating = "true";
+    detailsElement.open = true;
+    contentElement.style.transition = "none";
+    contentElement.style.height = "0px";
+    contentElement.style.opacity = "0";
+    contentElement.style.marginBottom = "0px";
+    void contentElement.offsetHeight;
+    contentElement.style.transition =
+      "height 650ms ease, opacity 360ms ease, margin-bottom 650ms ease";
+    contentElement.style.height = `${innerElement.scrollHeight}px`;
+    contentElement.style.opacity = "1";
+    contentElement.style.marginBottom = "1rem";
+
+    const handleTransitionEnd = (transitionEvent) => {
+      if (transitionEvent.propertyName !== "height") {
+        return;
+      }
+
+      contentElement.removeEventListener("transitionend", handleTransitionEnd);
+      contentElement.dataset.animating = "false";
+      contentElement.style.height = "auto";
+    };
+
+    contentElement.addEventListener("transitionend", handleTransitionEnd);
+  }
+
+  function animateClose(detailsElement, contentElement, innerElement) {
+    contentElement.dataset.animating = "true";
+    const currentHeight = innerElement.scrollHeight;
+    contentElement.style.transition = "none";
+    contentElement.style.height = `${currentHeight}px`;
+    contentElement.style.opacity = "1";
+    contentElement.style.marginBottom = "1rem";
+    void contentElement.offsetHeight;
+    contentElement.style.transition =
+      "height 650ms ease, opacity 320ms ease, margin-bottom 650ms ease";
+    contentElement.style.height = "0px";
+    contentElement.style.opacity = "0";
+    contentElement.style.marginBottom = "0px";
+
+    const handleTransitionEnd = (transitionEvent) => {
+      if (transitionEvent.propertyName !== "height") {
+        return;
+      }
+
+      contentElement.removeEventListener("transitionend", handleTransitionEnd);
+      contentElement.dataset.animating = "false";
+      detailsElement.open = false;
+      contentElement.style.height = "0px";
+    };
+
+    contentElement.addEventListener("transitionend", handleTransitionEnd);
+  }
+
   serviceDetailsElements.forEach((detailsElement) => {
     const summaryElement = detailsElement.querySelector("summary");
     const contentElement = detailsElement.querySelector(".service-details-content");
@@ -508,51 +563,39 @@ function setupServiceDetailAnimations() {
       }
 
       const isOpening = !detailsElement.open;
-      contentElement.dataset.animating = "true";
 
       if (isOpening) {
-        detailsElement.open = true;
-        contentElement.style.transition = "none";
-        contentElement.style.height = "0px";
-        contentElement.style.opacity = "0";
-        contentElement.style.marginBottom = "0px";
-        void contentElement.offsetHeight;
-        contentElement.style.transition =
-          "height 650ms ease, opacity 360ms ease, margin-bottom 650ms ease";
-        contentElement.style.height = `${innerElement.scrollHeight}px`;
-        contentElement.style.opacity = "1";
-        contentElement.style.marginBottom = "1rem";
+        serviceDetailsElements.forEach((otherDetailsElement) => {
+          if (otherDetailsElement === detailsElement || !otherDetailsElement.open) {
+            return;
+          }
+
+          const otherContentElement = otherDetailsElement.querySelector(
+            ".service-details-content"
+          );
+          const otherInnerElement = otherDetailsElement.querySelector(
+            ".service-details-inner"
+          );
+
+          if (
+            !otherContentElement ||
+            !otherInnerElement ||
+            otherContentElement.dataset.animating === "true"
+          ) {
+            return;
+          }
+
+          animateClose(
+            otherDetailsElement,
+            otherContentElement,
+            otherInnerElement
+          );
+        });
+
+        animateOpen(detailsElement, contentElement, innerElement);
       } else {
-        const currentHeight = innerElement.scrollHeight;
-        contentElement.style.transition = "none";
-        contentElement.style.height = `${currentHeight}px`;
-        contentElement.style.opacity = "1";
-        contentElement.style.marginBottom = "1rem";
-        void contentElement.offsetHeight;
-        contentElement.style.transition =
-          "height 650ms ease, opacity 320ms ease, margin-bottom 650ms ease";
-        contentElement.style.height = "0px";
-        contentElement.style.opacity = "0";
-        contentElement.style.marginBottom = "0px";
+        animateClose(detailsElement, contentElement, innerElement);
       }
-
-      const handleTransitionEnd = (transitionEvent) => {
-        if (transitionEvent.propertyName !== "height") {
-          return;
-        }
-
-        contentElement.removeEventListener("transitionend", handleTransitionEnd);
-        contentElement.dataset.animating = "false";
-
-        if (isOpening) {
-          contentElement.style.height = "auto";
-        } else {
-          detailsElement.open = false;
-          contentElement.style.height = "0px";
-        }
-      };
-
-      contentElement.addEventListener("transitionend", handleTransitionEnd);
     });
   });
 }

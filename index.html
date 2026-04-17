@@ -7,6 +7,12 @@
       name="description"
       content="Freelance Compass helps beginner freelance web developers compare services, estimate pricing, and evaluate project fit."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
     <title>Freelance Compass</title>
   </head>
@@ -37,9 +43,9 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Freelance pricing assistant</p>
-            <h1>Price with confidence. Build with clarity.</h1>
+            <h1>What every freelance web developer should know!</h1>
             <p class="hero-text">
-              Compare freelance web services, estimate pricing, and decide
+              Explore common freelance web services, estimate pricing, and decide
               whether a client project is worth accepting before you commit.
             </p>
 
@@ -59,72 +65,54 @@
         <div class="container feature-grid">
           <article class="feature-card">
             <div class="feature-card-header">
-              <span class="feature-icon" aria-hidden="true">01</span>
-              <h2>Pricing Calculator</h2>
-            </div>
-            <p>
-              Estimate a fair project range using budget, timeline, complexity,
-              and add-ons.
-            </p>
-          </article>
-
-          <article class="feature-card">
-            <div class="feature-card-header">
-              <span class="feature-icon" aria-hidden="true">02</span>
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M4 19h16v1.5H4V19Zm1.5-2.5a1 1 0 0 1-1-1v-3.25a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3.25a1 1 0 0 1-1 1h-2Zm5.25 0a1 1 0 0 1-1-1V8.75a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6.75a1 1 0 0 1-1 1h-2ZM16 16.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2Z"
+                  />
+                </svg>
+              </span>
               <h2>Market Rate Data</h2>
             </div>
             <p>
-              Compare common freelance web services with pricing benchmarks and
-              scope signals.
+              Compare common freelance web services, pricing ranges, timelines,
+              and scope signals before writing a proposal.
             </p>
           </article>
 
           <article class="feature-card">
             <div class="feature-card-header">
-              <span class="feature-icon" aria-hidden="true">03</span>
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v3h10V4H7Zm2 6H8v2h1v-2Zm3 0h-1v2h1v-2Zm3 0h-1v2h1v-2ZM9 14H8v2h1v-2Zm3 0h-1v2h1v-2Zm3 0h-1v2h1v-2ZM9 18H8v2h7v-2H9Z"
+                  />
+                </svg>
+              </span>
+              <h2>Pricing Calculator</h2>
+            </div>
+            <p>
+              Estimate a fair project range using budget, revisions, complexity,
+              and add-ons tailored to the client brief.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm4.2 7.4a1 1 0 0 0-1.4-1.42l-3.52 3.5-1.44-1.43a1 1 0 1 0-1.4 1.42l2.14 2.1a1 1 0 0 0 1.4 0l4.22-4.17Z"
+                  />
+                </svg>
+              </span>
               <h2>Project Evaluation</h2>
             </div>
             <p>
-              Review project fit and decide whether to accept, renegotiate, or
-              decline.
+              Review the project fit and decide whether to accept, renegotiate,
+              or walk away with more confidence.
             </p>
           </article>
-        </div>
-      </section>
-
-      <section class="insights-section" aria-labelledby="insights-heading">
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="insights-heading">Live Industry Insights</h2>
-            <p>
-              Recent web topics that may influence client demand, service value,
-              and project expectations.
-            </p>
-          </div>
-
-          <div class="insights-toolbar" aria-label="Insight filters">
-            <button type="button" class="tag-filter is-active" data-tag="all">
-              All
-            </button>
-            <button type="button" class="tag-filter" data-tag="webdev">
-              Webdev
-            </button>
-            <button type="button" class="tag-filter" data-tag="javascript">
-              JavaScript
-            </button>
-            <button type="button" class="tag-filter" data-tag="css">
-              CSS
-            </button>
-          </div>
-
-          <div class="insights-panel">
-            <p class="widget-status" id="insights-status">
-              Loading industry insights...
-            </p>
-            <div id="insights-list" class="insights-list" aria-live="polite">
-              <!-- Live insight cards will be rendered here in a later step. -->
-            </div>
-          </div>
         </div>
       </section>
 
@@ -135,7 +123,7 @@
       >
         <div class="container">
           <div class="section-heading">
-            <h2 id="services-heading">Service Comparison</h2>
+            <h2 id="services-heading">Freelance Services</h2>
             <p>
               Browse common freelance web services with estimated pricing,
               timelines, and scope signals.
@@ -430,6 +418,65 @@
           </div>
         </div>
       </section>
+
+      <section class="insights-section" aria-labelledby="insights-heading">
+        <div class="container">
+          <div class="section-heading">
+            <h2 id="insights-heading">Live Industry Insights</h2>
+            <p>
+              Recent web topics that may influence client demand, service value,
+              and project expectations.
+            </p>
+          </div>
+
+          <div class="insights-toolbar" aria-label="Insight filters">
+            <button type="button" class="tag-filter is-active" data-tag="all">
+              All
+            </button>
+            <button type="button" class="tag-filter" data-tag="freelancing">
+              Freelancing
+            </button>
+            <button type="button" class="tag-filter" data-tag="webdev">
+              Webdev
+            </button>
+            <button type="button" class="tag-filter" data-tag="javascript">
+              JavaScript
+            </button>
+            <button type="button" class="tag-filter" data-tag="css">
+              CSS
+            </button>
+            <button type="button" class="tag-filter" data-tag="react">
+              React
+            </button>
+            <button type="button" class="tag-filter" data-tag="seo">
+              SEO
+            </button>
+            <button type="button" class="tag-filter" data-tag="performance">
+              Performance
+            </button>
+            <button type="button" class="tag-filter" data-tag="accessibility">
+              Accessibility
+            </button>
+          </div>
+
+          <div class="insights-panel">
+            <p class="widget-status" id="insights-status">
+              Loading industry insights...
+            </p>
+            <div id="insights-list" class="insights-list" aria-live="polite">
+              <!-- Live insight cards will be rendered here in a later step. -->
+            </div>
+            <button
+              type="button"
+              id="insights-toggle"
+              class="insights-toggle button button-secondary"
+              hidden
+            >
+              Show more insights
+            </button>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -462,5 +509,6 @@
       </div>
     </footer>
     <script src="script.js"></script>
+    <script src="insights.js"></script>
   </body>
 </html>
