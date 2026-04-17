@@ -289,8 +289,8 @@ Completed work includes:
 * GitHub Pages deployment
 * calculator local storage that restores previous form inputs
 
-Current focus:
+Current status:
 
-* final README cleanup and submission wording
-* final deployment to Vercel
-* any last small polish fixes discovered during final QA
+* project submitted
+* deployed to Vercel and GitHub Pages
+* available for future polish and portfolio refinement
