@@ -300,6 +300,247 @@ Widget concept:
 * consider deduplicating articles if the same item appears under multiple tags
 * keep a fallback message ready if the live feed becomes unavailable
 
+### Updated implementation plan for `insights.js`
+
+The current plan is to create a dedicated `insights.js` file rather than adding the widget code into the main `script.js`.
+
+Reason:
+
+* the service gallery already has its own DOM logic and rendering
+* the calculator already has its own form, validation, and output logic
+* the live widget introduces a third separate concern: API fetching, transforming data, loading/error states, and tag filtering
+* keeping the widget in its own file is cleaner and easier to maintain
+
+Current structure decision:
+
+* keep the existing `script.js` for now
+* add a dedicated `insights.js`
+* load both scripts in `index.html`
+* avoid a bigger JS refactor for now
+
+### Planned responsibilities for `insights.js`
+
+The widget file should own:
+
+* DOM references for the insights section
+* widget state
+* DEV.to fetch logic
+* article normalization / transformation
+* card rendering
+* filter button behavior
+* loading, empty, and error states
+
+### Planned widget state
+
+Likely state variables:
+
+```js
+let insightsCatalog = [];
+let activeInsightTag = "all";
+```
+
+### Planned API approach
+
+Use the DEV.to article endpoint and fetch a small number of recent posts that are relevant to freelance web developers.
+
+Possible endpoint:
+
+```js
+const insightsApiUrl = "https://dev.to/api/articles?state=fresh&per_page=18";
+```
+
+Reasoning:
+
+* `state=fresh` fits the "live insights" idea better than older top posts
+* `per_page=18` gives enough content for filtering without making the widget too heavy
+* local filtering after one fetch gives a faster UI than re-fetching every time a topic button is clicked
+
+### Planned normalized data shape
+
+Instead of rendering directly from the full API response, normalize each article into a smaller object:
+
+```js
+{
+  title: article.title,
+  description: article.description,
+  url: article.url,
+  publishedAt: article.published_at,
+  readingTime: article.reading_time_minutes,
+  positiveReactions: article.positive_reactions_count,
+  commentsCount: article.comments_count,
+  tags: article.tag_list,
+  authorName: article.user.name,
+  authorImage: article.user.profile_image_90
+}
+```
+
+Reason:
+
+* simpler rendering code
+* clearer internal data model
+* easier to debug and study later
+
+### Planned filter strategy
+
+The existing filter buttons in the HTML already match the intended widget topics:
+
+* `all`
+* `webdev`
+* `javascript`
+* `css`
+
+The filtering plan is:
+
+* fetch once
+* store results in `insightsCatalog`
+* filter locally by the active tag
+* re-render without making a new network request
+
+Example idea:
+
+```js
+function getVisibleInsights() {
+  if (activeInsightTag === "all") {
+    return insightsCatalog;
+  }
+
+  return insightsCatalog.filter((article) =>
+    article.tags.some((tag) => tag.toLowerCase().includes(activeInsightTag))
+  );
+}
+```
+
+Note:
+
+* DEV.to tags are user-generated, so the final filter may need to be slightly flexible rather than relying only on exact matches
+
+### Planned rendering strategy
+
+Each insight card should probably include:
+
+* title
+* short summary
+* published date
+* reading time
+* author
+* a few tags
+* external article link
+
+Example rendering direction:
+
+```js
+function renderInsights(insights) {
+  if (!insights.length) {
+    insightsList.innerHTML = `
+      <article class="insight-card insight-card-empty">
+        <h3>No matching insights</h3>
+        <p>Try another topic filter to explore more articles.</p>
+      </article>
+    `;
+    return;
+  }
+
+  insightsList.innerHTML = insights
+    .map(
+      (article) => `
+        <article class="insight-card">
+          <div class="insight-card-meta">
+            <p>${formatInsightDate(article.publishedAt)}</p>
+            <p>${article.readingTime} min read</p>
+          </div>
+
+          <h3>${article.title}</h3>
+          <p class="insight-summary">${article.description || "No summary available."}</p>
+
+          <div class="insight-tags">
+            ${article.tags
+              .slice(0, 3)
+              .map((tag) => `<span class="insight-tag">#${tag}</span>`)
+              .join("")}
+          </div>
+
+          <div class="insight-card-footer">
+            <p>${article.authorName}</p>
+            <a href="${article.url}" target="_blank" rel="noopener noreferrer">
+              Read article
+            </a>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+```
+
+### Planned loading and error states
+
+The widget already has:
+
+* `#insights-status`
+* `#insights-list`
+
+Planned use:
+
+* loading: show a loading message
+* success: replace status with a short helper message
+* empty: show a "no matching insights" card
+* error: show a fallback message without breaking the rest of the page
+
+Example pattern:
+
+```js
+function setInsightsStatus(message) {
+  insightsStatus.textContent = message;
+}
+
+async function loadIndustryInsights() {
+  setInsightsStatus("Loading industry insights...");
+
+  try {
+    const response = await fetch(insightsApiUrl);
+
+    if (!response.ok) {
+      throw new Error("Unable to load industry insights.");
+    }
+
+    const data = await response.json();
+
+    insightsCatalog = data.map(normalizeInsightArticle);
+    setInsightsStatus("Browse current topics relevant to freelance web developers.");
+    renderInsights(getVisibleInsights());
+  } catch (error) {
+    setInsightsStatus("Industry insights are unavailable right now.");
+    insightsList.innerHTML = "";
+  }
+}
+```
+
+### Planned date formatting helper
+
+Useful helper for readable card metadata:
+
+```js
+function formatInsightDate(dateString) {
+  return new Intl.DateTimeFormat("en-CA", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(dateString));
+}
+```
+
+### Current implementation sequence
+
+Planned order of work:
+
+1. create `insights.js`
+2. load it in `index.html`
+3. add fetch logic for DEV.to
+4. normalize article data
+5. render live insight cards
+6. wire topic filters
+7. polish styles if needed after real content is visible
+
 ---
 
 ## Error Handling Notes

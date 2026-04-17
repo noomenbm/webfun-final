@@ -218,6 +218,13 @@ This project is designed to satisfy the course requirements by including:
 
 ---
 
+## Live Links
+
+* **GitHub repository:** https://github.com/noomenbm/webfun-final
+* **Live deployment:** https://noomenbm.github.io/webfun-final/
+
+---
+
 ## Future Expansion
 
 After the class version is complete, Freelance Compass could expand into a more advanced portfolio project with features such as:
@@ -233,19 +240,52 @@ After the class version is complete, Freelance Compass could expand into a more 
 
 ## Challenges & Solutions
 
-This section will document at least one technical hurdle encountered during development and how it was solved.
+One of the main technical challenges in this project was responsive layout refinement across many viewport sizes.
 
-Planned examples may include:
+The app includes several components that behave very differently depending on screen width:
 
-* connecting the service gallery, calculator, and live widget into one cohesive user flow
-* handling API responses and displaying fallback UI when live data is unavailable
-* designing calculator logic that stays simple enough for a class project while still feeling useful
-* making a complex desktop layout adapt cleanly to mobile screens
+* the service gallery toolbar
+* the service card grid and expandable details panels
+* the calculator form and recommendation panel
+* the live insights widget and its responsive card counts
 
-This section will be updated as real implementation challenges appear during the build process.
+The biggest difficulty was not just making the layout "work" on one mobile width and one desktop width. The harder problem was making sure spacing, alignment, and component sizing still felt intentional on intermediate widths such as tablets and narrow laptops.
+
+The solution was a more systematic testing and refinement process:
+
+* build the layout mobile-first, then scale upward
+* test multiple viewport ranges instead of only one mobile and one desktop size
+* identify the components that changed structure the most, especially the calculator grid and the insights/service card grids
+* use targeted media queries to adjust layout at specific breakpoints instead of relying on one broad rule
+* make incremental CSS changes, then re-check the result in browser responsive tools before moving on
+
+This process led to several improvements, such as:
+
+* calculator fields that stack on smaller screens but sit side by side on wider ones
+* service and insights cards that limit visible content and preserve more consistent card heights
+* toolbar and section spacing adjustments for tablet and mobile layouts
+* expanded/collapsed behaviors that still feel usable on smaller screens
+
+The biggest lesson from this challenge was that responsive design is not solved by one CSS rule. It requires repeated testing, careful breakpoint decisions, and small focused adjustments until the layout feels stable across realistic screen sizes.
 
 ---
 
 ## Status
 
-The project is currently in the planning phase. The next steps are to finalize the pitch, map the data model, create the wireframe, and begin building the first view.
+The project is in active implementation and polish.
+
+Completed work so far includes:
+
+* project pitch, user persona, problem definition, and planning documentation
+* low-fidelity wireframes
+* a responsive single-page layout
+* a dynamic local service gallery with search, filtering, sorting, and expandable details
+* a pricing and project-fit calculator with custom client-side validation
+* a live industry insights widget powered by the DEV.to API
+* GitHub Pages deployment
+
+Current focus:
+
+* final polish and rubric checks
+* README cleanup and submission readiness
+* possible local storage enhancement as a follow-up feature
