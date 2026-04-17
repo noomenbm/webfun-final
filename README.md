@@ -263,6 +263,7 @@ The solution was a more systematic testing and refinement process:
 This process led to several improvements, such as:
 
 * calculator fields that stack on smaller screens but sit side by side on wider ones
+* a header/navigation system that stays expanded on larger screens but collapses into a mobile menu on smaller screens
 * service and insights cards that limit visible content and preserve more consistent card heights
 * toolbar and section spacing adjustments for tablet and mobile layouts
 * expanded/collapsed behaviors that still feel usable on smaller screens

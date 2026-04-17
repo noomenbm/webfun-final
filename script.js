@@ -8,6 +8,8 @@ const viewSections = document.querySelectorAll("[data-view-section]");
 const viewLinks = document.querySelectorAll("[data-view-link]");
 const validViews = new Set(["home", "services", "calculator", "insights"]);
 const defaultView = "home";
+const navToggleButton = document.querySelector(".nav-toggle");
+const headerActions = document.querySelector(".header-actions");
 
 
 // Service grid handling
@@ -56,6 +58,20 @@ const defaultCalculatorResults = {
 
 let serviceCatalog = [];
 
+function setMobileNavState(isOpen) {
+  if (!navToggleButton || !headerActions) {
+    return;
+  }
+
+  navToggleButton.setAttribute("aria-expanded", String(isOpen));
+  headerActions.classList.toggle("is-open", isOpen);
+  document.body.classList.toggle("nav-open", isOpen);
+}
+
+function closeMobileNav() {
+  setMobileNavState(false);
+}
+
 function getRequestedView() {
   const requestedHash = window.location.hash.replace("#", "").trim().toLowerCase();
   return validViews.has(requestedHash) ? requestedHash : defaultView;
@@ -81,6 +97,7 @@ function setActiveView(viewName) {
   });
 
   document.body.dataset.activeView = activeView;
+  closeMobileNav();
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
@@ -796,6 +813,16 @@ calculatorForm.addEventListener("submit", (event) => {
 calculatorClearButton?.addEventListener("click", clearCalculatorForm);
 
 window.addEventListener("hashchange", syncViewFromHash);
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 640) {
+    closeMobileNav();
+  }
+});
+
+navToggleButton?.addEventListener("click", () => {
+  const isOpen = navToggleButton.getAttribute("aria-expanded") === "true";
+  setMobileNavState(!isOpen);
+});
 
 syncViewFromHash();
 loadServiceCatalog();

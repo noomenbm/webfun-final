@@ -28,19 +28,33 @@
           <span>Freelance Compass</span>
         </a>
 
-        <nav class="site-nav" aria-label="Primary">
-          <a href="#home" data-view-link="home">Overview</a>
-          <a href="#services" data-view-link="services">Services</a>
-          <a href="#calculator" data-view-link="calculator">Calculator</a>
-          <a href="#insights" data-view-link="insights">Insights</a>
-        </nav>
-
-        <a
-          href="#calculator"
-          class="button button-primary"
-          data-view-link="calculator"
-          >Start Estimate</a
+        <button
+          type="button"
+          class="nav-toggle"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label="Toggle navigation menu"
         >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="header-actions" id="primary-nav">
+          <nav class="site-nav" aria-label="Primary">
+            <a href="#home" data-view-link="home">Overview</a>
+            <a href="#services" data-view-link="services">Services</a>
+            <a href="#calculator" data-view-link="calculator">Calculator</a>
+            <a href="#insights" data-view-link="insights">Insights</a>
+          </nav>
+
+          <a
+            href="#calculator"
+            class="button button-primary"
+            data-view-link="calculator"
+            >Start Estimate</a
+          >
+        </div>
       </div>
     </header>
 
@@ -54,7 +68,7 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Freelance pricing assistant</p>
-            <h1 id="home-heading">What every freelance web developer should know!</h1>
+            <h1 id="home-heading">What every freelance WebDev should know!</h1>
             <p class="hero-text">
               Explore common freelance web services, estimate pricing, and decide
               whether a client project is worth accepting before you commit.
