@@ -3,6 +3,12 @@
 // Local project data served from the same site.
 const servicesDataURL = "./data/services.json";
 
+// Single-page multi-view handling
+const viewSections = document.querySelectorAll("[data-view-section]");
+const viewLinks = document.querySelectorAll("[data-view-link]");
+const validViews = new Set(["home", "services", "calculator", "insights"]);
+const defaultView = "home";
+
 
 // Service grid handling
 const servicesGrid = document.querySelector("#services-grid");
@@ -49,6 +55,44 @@ const defaultCalculatorResults = {
 };
 
 let serviceCatalog = [];
+
+function getRequestedView() {
+  const requestedHash = window.location.hash.replace("#", "").trim().toLowerCase();
+  return validViews.has(requestedHash) ? requestedHash : defaultView;
+}
+
+function setActiveView(viewName) {
+  const activeView = validViews.has(viewName) ? viewName : defaultView;
+
+  viewSections.forEach((section) => {
+    const isActive = section.dataset.viewSection === activeView;
+    section.hidden = !isActive;
+  });
+
+  viewLinks.forEach((link) => {
+    const isActive = link.dataset.viewLink === activeView;
+    link.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+
+  document.body.dataset.activeView = activeView;
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function syncViewFromHash() {
+  const nextView = getRequestedView();
+
+  if (window.location.hash !== `#${nextView}`) {
+    history.replaceState(null, "", `#${nextView}`);
+  }
+
+  setActiveView(nextView);
+}
 
 function saveCalculatorState() {
   if (!calculatorForm) {
@@ -551,6 +595,15 @@ function renderCalculatorRecommendation(recommendation) {
 }
 
 function revealCalculatorResults() {
+  const calculatorSection = document.querySelector(
+    '[data-view-section="calculator"]'
+  );
+
+  if (calculatorSection?.hidden) {
+    history.replaceState(null, "", "#calculator");
+    setActiveView("calculator");
+  }
+
   const resultsCardTop =
     resultsCard.getBoundingClientRect().top + window.scrollY;
   let viewportOffset = window.innerHeight * 0.12;
@@ -742,4 +795,7 @@ calculatorForm.addEventListener("submit", (event) => {
 
 calculatorClearButton?.addEventListener("click", clearCalculatorForm);
 
+window.addEventListener("hashchange", syncViewFromHash);
+
+syncViewFromHash();
 loadServiceCatalog();
