@@ -4,10 +4,49 @@
 const servicesDataURL = "./data/services.json";
 
 
+// Service grid handling
 const servicesGrid = document.querySelector("#services-grid");
 const serviceSearchInput = document.querySelector("#service-search");
 const serviceFilterSelect = document.querySelector("#service-filter");
 const serviceSortSelect = document.querySelector("#service-sort");
+const servicesClearButton = document.querySelector("#services-clear");
+
+
+// Calculator logic handling
+const calculatorForm = document.querySelector("#calculator-form");
+const serviceTypeSelect = document.querySelector("#service-type");
+const estimatedPagesInput = document.querySelector("#estimated-pages");
+const budgetInput = document.querySelector("#budget");
+const clientRevisionsSelect = document.querySelector("#client-revisions");
+const calculatorClearButton = document.querySelector("#calculator-clear");
+
+const calculatorErrorElements = {
+  serviceType: document.querySelector("#service-type-error"),
+  estimatedPages: document.querySelector("#estimated-pages-error"),
+  budget: document.querySelector("#budget-error"),
+  clientRevisions: document.querySelector("#client-revisions-error"),
+};
+
+const calculatorResultElements = {
+  priceRange: document.querySelector("#result-price-range"),
+  budget: document.querySelector("#result-budget"),
+  timeline: document.querySelector("#result-timeline"),
+  scope: document.querySelector("#result-scope"),
+  label: document.querySelector("#result-label"),
+  message: document.querySelector("#result-message"),
+};
+const resultsCard = document.querySelector(".results-card");
+const resultHighlight = document.querySelector(".result-highlight");
+
+const defaultCalculatorResults = {
+  priceRange: "$0 - $0",
+  budget: "Enter project details to compare budget fit.",
+  timeline: "Timeline evaluation will appear here.",
+  scope: "Scope evaluation will appear here.",
+  label: "Waiting for input",
+  message: "Complete the calculator to receive a project-fit recommendation.",
+};
+
 let serviceCatalog = [];
 
 function formatCurrency(amount) {
@@ -148,6 +187,297 @@ function updateServiceGallery() {
   renderServiceGallery(getVisibleServices());
 }
 
+function updateServicesClearButton() {
+  if (!servicesClearButton) {
+    return;
+  }
+
+  const hasActiveFilters =
+    serviceSearchInput.value.trim() !== "" ||
+    serviceFilterSelect.value !== "all" ||
+    serviceSortSelect.value !== "default";
+
+  servicesClearButton.disabled = !hasActiveFilters;
+}
+
+function refreshServiceGallery() {
+  updateServiceGallery();
+  updateServicesClearButton();
+}
+
+function clearServiceFilters() {
+  serviceSearchInput.value = "";
+  serviceFilterSelect.value = "all";
+  serviceSortSelect.value = "default";
+  refreshServiceGallery();
+}
+
+function populateCalculatorServiceOptions() {
+  if (!serviceTypeSelect) {
+    return;
+  }
+
+  const optionsMarkup = serviceCatalog
+    .map((service) => {
+      return `
+        <option value="${service.id}">
+          ${service.title}
+        </option>
+      `;
+    })
+    .join("");
+
+  serviceTypeSelect.innerHTML = `
+    <option value="">Select a service</option>
+    ${optionsMarkup}
+  `;
+}
+
+function clearCalculatorErrors() {
+  Object.values(calculatorErrorElements).forEach((errorElement) => {
+    if (errorElement) {
+      errorElement.textContent = "";
+    }
+  });
+}
+
+function resetCalculatorResults() {
+  calculatorResultElements.priceRange.textContent =
+    defaultCalculatorResults.priceRange;
+  calculatorResultElements.budget.textContent = defaultCalculatorResults.budget;
+  calculatorResultElements.timeline.textContent =
+    defaultCalculatorResults.timeline;
+  calculatorResultElements.scope.textContent = defaultCalculatorResults.scope;
+  calculatorResultElements.label.textContent = defaultCalculatorResults.label;
+  calculatorResultElements.message.textContent =
+    defaultCalculatorResults.message;
+
+  resultsCard.classList.remove("is-active", "just-updated");
+  resultHighlight.classList.remove("is-active");
+  window.clearTimeout(renderCalculatorRecommendation.updateTimer);
+}
+
+function clearCalculatorForm() {
+  calculatorForm.reset();
+  clearCalculatorErrors();
+  resetCalculatorResults();
+}
+
+function getCheckedValue(name) {
+  return document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+}
+
+function getCheckedValues(name) {
+  return Array.from(
+    document.querySelectorAll(`input[name="${name}"]:checked`),
+    (input) => input.value
+  );
+}
+
+function getCalculatorFormData() {
+  return {
+    serviceType: serviceTypeSelect.value,
+    estimatedPages: Number(estimatedPagesInput.value),
+    budget: Number(budgetInput.value),
+    complexity: getCheckedValue("complexity"),
+    timelineUrgency: getCheckedValue("timelineUrgency"),
+    includedWork: getCheckedValues("includedWork"),
+    extras: getCheckedValues("extras"),
+    clientRevisions: clientRevisionsSelect.value,
+  };
+}
+
+function validateCalculatorForm(formData) {
+  clearCalculatorErrors();
+
+  let isValid = true;
+
+  if (!formData.serviceType) {
+    calculatorErrorElements.serviceType.textContent = "Select a project type.";
+    isValid = false;
+  }
+
+  if (!Number.isFinite(formData.estimatedPages) || formData.estimatedPages < 1) {
+    calculatorErrorElements.estimatedPages.textContent =
+      "Enter at least 1 estimated page.";
+    isValid = false;
+  }
+
+  if (!Number.isFinite(formData.budget) || formData.budget <= 0) {
+    calculatorErrorElements.budget.textContent =
+      "Enter a valid project budget.";
+    isValid = false;
+  }
+
+  if (!formData.clientRevisions) {
+    calculatorErrorElements.clientRevisions.textContent =
+      "Choose a revision level.";
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+
+// Esstimate calculation
+function calculateProjectRecommendation(formData) {
+  const selectedService = serviceCatalog.find((service) => {
+    return String(service.id) === formData.serviceType;
+  });
+
+  const complexityMultipliers = {
+    basic: 1,
+    medium: 1.2,
+    advanced: 1.45,
+  };
+
+  const timelineMultipliers = {
+    flexible: 1,
+    soon: 1.15,
+    rush: 1.3,
+  };
+
+  const includedWorkCosts = {
+    design: 450,
+    content: 250,
+  };
+
+  const extraServiceCosts = {
+    seo: 300,
+    accessibility: 450,
+    cms: 700,
+    performance: 350,
+  };
+
+  const revisionCosts = {
+    1: 0,
+    2: 150,
+    3: 300,
+  };
+
+  const basePrice = selectedService.startingPrice;
+  const additionalPageCost = Math.max(formData.estimatedPages - 1, 0) * 120;
+  const includedWorkTotal = formData.includedWork.reduce((total, item) => {
+    return total + includedWorkCosts[item];
+  }, 0);
+  const extrasTotal = formData.extras.reduce((total, item) => {
+    return total + extraServiceCosts[item];
+  }, 0);
+
+  const subtotal =
+    basePrice +
+    additionalPageCost +
+    includedWorkTotal +
+    extrasTotal +
+    revisionCosts[formData.clientRevisions];
+
+  const adjustedPrice =
+    subtotal *
+    complexityMultipliers[formData.complexity || "basic"] *
+    timelineMultipliers[formData.timelineUrgency || "flexible"];
+
+  const estimatedMin = Math.round(adjustedPrice * 0.92);
+  const estimatedMax = Math.round(adjustedPrice * 1.12);
+
+  let budgetAssessment = "The budget appears workable for this scope.";
+  let timelineAssessment = "The current timeline looks manageable.";
+  let scopeAssessment = "The project scope appears reasonable as described.";
+  let recommendationLabel = "Accept";
+  let recommendationMessage =
+    "This project looks like a reasonable fit. Keep the proposal specific.";
+
+  // ====== Decision =========
+  if (formData.budget < estimatedMin) {
+    budgetAssessment =
+      "The client budget is below the estimated minimum for this work.";
+    recommendationLabel = "Renegotiate";
+    recommendationMessage =
+      "The project may still work, but the scope or budget likely needs adjustment.";
+  } else if (formData.budget > estimatedMax) {
+    budgetAssessment =
+      "The client budget is above your estimated range, which gives you flexibility.";
+  }
+
+  if (formData.timelineUrgency === "soon") {
+    timelineAssessment =
+      "The deadline is somewhat tight, so keep revisions and deliverables clearly scoped.";
+  }
+
+  if (formData.timelineUrgency === "rush") {
+    timelineAssessment =
+      "This is a rush timeline and increases delivery pressure.";
+    recommendationLabel = formData.budget >= estimatedMax ? "Renegotiate" : "Decline";
+    recommendationMessage =
+      "The rushed timeline adds delivery risk. Consider negotiating timeline, scope, or price.";
+  }
+
+  if (formData.extras.length >= 2 || formData.estimatedPages >= 6) {
+    scopeAssessment =
+      "This scope is getting heavier, so define deliverables and revision limits very clearly.";
+  }
+
+  if (
+    formData.timelineUrgency === "rush" &&
+    formData.complexity === "advanced" &&
+    formData.budget < estimatedMax
+  ) {
+    recommendationLabel = "Decline";
+    recommendationMessage =
+      "This combination of advanced scope, rushed timing, and limited budget is high risk.";
+  }
+
+  return {
+    estimatedMin,
+    estimatedMax,
+    budgetAssessment,
+    timelineAssessment,
+    scopeAssessment,
+    recommendationLabel,
+    recommendationMessage,
+  };
+}
+
+function renderCalculatorRecommendation(recommendation) {
+  calculatorResultElements.priceRange.textContent = `${formatCurrency(
+    recommendation.estimatedMin
+  )} - ${formatCurrency(recommendation.estimatedMax)}`;
+  calculatorResultElements.budget.textContent = recommendation.budgetAssessment;
+  calculatorResultElements.timeline.textContent =
+    recommendation.timelineAssessment;
+  calculatorResultElements.scope.textContent = recommendation.scopeAssessment;
+  calculatorResultElements.label.textContent = recommendation.recommendationLabel;
+  calculatorResultElements.message.textContent =
+    recommendation.recommendationMessage;
+
+  resultsCard.classList.add("is-active");
+  resultHighlight.classList.add("is-active");
+  resultsCard.classList.remove("just-updated");
+  void resultsCard.offsetWidth;
+  resultsCard.classList.add("just-updated");
+
+  window.clearTimeout(renderCalculatorRecommendation.updateTimer);
+  renderCalculatorRecommendation.updateTimer = window.setTimeout(() => {
+    resultsCard.classList.remove("just-updated");
+  }, 1400);
+}
+
+function revealCalculatorResults() {
+  const resultsCardTop =
+    resultsCard.getBoundingClientRect().top + window.scrollY;
+  let viewportOffset = window.innerHeight * 0.12;
+
+  if (window.innerWidth <= 520) {
+    viewportOffset = window.innerHeight * 0.02;
+  } else if (window.innerWidth <= 900) {
+    viewportOffset = window.innerHeight * 0.12;
+  }
+
+  window.scrollTo({
+    top: Math.max(resultsCardTop - viewportOffset, 0),
+    behavior: "smooth",
+  });
+}
+
 function setupServiceDetailAnimations() {
   const serviceDetailsElements = document.querySelectorAll(".service-details");
 
@@ -236,7 +566,8 @@ async function loadServiceCatalog() {
     }
 
     serviceCatalog = await response.json();
-    updateServiceGallery();
+    populateCalculatorServiceOptions();
+    refreshServiceGallery();
   } catch (error) {
     servicesGrid.innerHTML = `
       <article class="service-card">
@@ -249,8 +580,23 @@ async function loadServiceCatalog() {
   }
 }
 
-serviceSearchInput.addEventListener("input", updateServiceGallery);
-serviceFilterSelect.addEventListener("change", updateServiceGallery);
-serviceSortSelect.addEventListener("change", updateServiceGallery);
+serviceSearchInput.addEventListener("input", refreshServiceGallery);
+serviceFilterSelect.addEventListener("change", refreshServiceGallery);
+serviceSortSelect.addEventListener("change", refreshServiceGallery);
+servicesClearButton?.addEventListener("click", clearServiceFilters);
+calculatorForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = getCalculatorFormData();
+
+  if (!validateCalculatorForm(formData)) {
+    return;
+  }
+
+  renderCalculatorRecommendation(calculateProjectRecommendation(formData));
+  revealCalculatorResults();
+});
+
+calculatorClearButton?.addEventListener("click", clearCalculatorForm);
 
 loadServiceCatalog();
