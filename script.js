@@ -19,6 +19,7 @@ const estimatedPagesInput = document.querySelector("#estimated-pages");
 const budgetInput = document.querySelector("#budget");
 const clientRevisionsSelect = document.querySelector("#client-revisions");
 const calculatorClearButton = document.querySelector("#calculator-clear");
+const calculatorStorageKey = "freelanceCompassCalculator";
 
 const calculatorErrorElements = {
   serviceType: document.querySelector("#service-type-error"),
@@ -48,6 +49,93 @@ const defaultCalculatorResults = {
 };
 
 let serviceCatalog = [];
+
+function saveCalculatorState() {
+  if (!calculatorForm) {
+    return;
+  }
+
+  const calculatorState = {
+    serviceType: serviceTypeSelect.value,
+    estimatedPages: estimatedPagesInput.value,
+    budget: budgetInput.value,
+    complexity: getCheckedValue("complexity"),
+    timelineUrgency: getCheckedValue("timelineUrgency"),
+    includedWork: getCheckedValues("includedWork"),
+    extras: getCheckedValues("extras"),
+    clientRevisions: clientRevisionsSelect.value,
+  };
+
+  try {
+    window.localStorage.setItem(
+      calculatorStorageKey,
+      JSON.stringify(calculatorState)
+    );
+  } catch (error) {
+    // Storage should never block the rest of the app.
+  }
+}
+
+function clearCalculatorState() {
+  try {
+    window.localStorage.removeItem(calculatorStorageKey);
+  } catch (error) {
+    // Ignore storage failures and keep the UI usable.
+  }
+}
+
+function setCheckedValues(name, values) {
+  const selectedValues = new Set(values);
+
+  document.querySelectorAll(`input[name="${name}"]`).forEach((input) => {
+    input.checked = selectedValues.has(input.value);
+  });
+}
+
+function applyCalculatorState(savedState) {
+  if (!savedState || typeof savedState !== "object") {
+    return;
+  }
+
+  serviceTypeSelect.value = String(savedState.serviceType || "");
+  estimatedPagesInput.value = savedState.estimatedPages || "";
+  budgetInput.value = savedState.budget || "";
+  clientRevisionsSelect.value = String(savedState.clientRevisions || "");
+
+  const complexityValue = String(savedState.complexity || "");
+  const timelineUrgencyValue = String(savedState.timelineUrgency || "");
+
+  document.querySelectorAll('input[name="complexity"]').forEach((input) => {
+    input.checked = input.value === complexityValue;
+  });
+
+  document.querySelectorAll('input[name="timelineUrgency"]').forEach((input) => {
+    input.checked = input.value === timelineUrgencyValue;
+  });
+
+  setCheckedValues("includedWork", Array.isArray(savedState.includedWork)
+    ? savedState.includedWork.map(String)
+    : []);
+  setCheckedValues(
+    "extras",
+    Array.isArray(savedState.extras) ? savedState.extras.map(String) : []
+  );
+}
+
+function loadCalculatorState() {
+  try {
+    const rawCalculatorState = window.localStorage.getItem(calculatorStorageKey);
+
+    if (!rawCalculatorState) {
+      return null;
+    }
+
+    return JSON.parse(rawCalculatorState);
+  } catch (error) {
+    clearCalculatorState();
+    return null;
+  }
+}
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-CA", {
@@ -261,6 +349,7 @@ function clearCalculatorForm() {
   calculatorForm.reset();
   clearCalculatorErrors();
   resetCalculatorResults();
+  clearCalculatorState();
 }
 
 function getCheckedValue(name) {
@@ -611,6 +700,14 @@ async function loadServiceCatalog() {
     serviceCatalog = await response.json();
     populateCalculatorServiceOptions();
     refreshServiceGallery();
+
+    const savedCalculatorState = loadCalculatorState();
+
+    if (savedCalculatorState) {
+      applyCalculatorState(savedCalculatorState);
+      clearCalculatorErrors();
+      resetCalculatorResults();
+    }
   } catch (error) {
     servicesGrid.innerHTML = `
       <article class="service-card">
@@ -627,6 +724,8 @@ serviceSearchInput.addEventListener("input", refreshServiceGallery);
 serviceFilterSelect.addEventListener("change", refreshServiceGallery);
 serviceSortSelect.addEventListener("change", refreshServiceGallery);
 servicesClearButton?.addEventListener("click", clearServiceFilters);
+calculatorForm.addEventListener("input", saveCalculatorState);
+calculatorForm.addEventListener("change", saveCalculatorState);
 calculatorForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -637,6 +736,7 @@ calculatorForm.addEventListener("submit", (event) => {
   }
 
   renderCalculatorRecommendation(calculateProjectRecommendation(formData));
+  saveCalculatorState();
   revealCalculatorResults();
 });
 
