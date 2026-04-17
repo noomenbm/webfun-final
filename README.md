@@ -223,7 +223,7 @@ This project satisfies the course requirements by including:
 
 * **GitHub repository:** https://github.com/noomenbm/webfun-final
 * **Current live deployment (GitHub Pages):** https://noomenbm.github.io/webfun-final/
-* **Final Vercel deployment:** to be added after final deployment
+* **Final Vercel deployment:** https://freelance-compass.vercel.app/#home
 * **Figma wireframe:** https://www.figma.com/proto/ihyT071BriZCjLh3fEEqnk/Freelance-Compass-Wireframe?node-id=2-1600&t=S2ObrFTQrB3kT0fz-1
 
 ---
