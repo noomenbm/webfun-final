@@ -134,6 +134,11 @@ button {
   transition: color 180ms ease;
 }
 
+.site-nav a.is-active,
+.site-footer a.is-active {
+  color: var(--ink);
+}
+
 .site-nav a:hover,
 .site-nav a:focus-visible,
 .site-footer a:hover,
@@ -204,10 +209,16 @@ button {
 
 .hero-section,
 .feature-strip,
+.workflow-section,
 .insights-section,
+.support-section,
 .services-section,
 .calculator-section {
   padding-block: var(--space-6);
+}
+
+[data-view-section][hidden] {
+  display: none !important;
 }
 
 .hero-grid {
@@ -281,7 +292,9 @@ legend,
 }
 
 .feature-grid,
-.footer-grid {
+.footer-grid,
+.workflow-grid,
+.support-grid {
   display: grid;
   gap: var(--space-4);
 }
@@ -337,13 +350,71 @@ legend,
   margin: var(--space-4) 0 0;
 }
 
+.workflow-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.workflow-card,
+.support-panel {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.workflow-card {
+  padding: var(--space-4);
+}
+
+.workflow-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  margin: 0 0 var(--space-3);
+  padding: 0.55rem 0.75rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font-family:
+    "Space Grotesk", "Trebuchet MS", "Segoe UI Semibold", "Segoe UI", Arial,
+    sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.workflow-card p:last-child,
+.support-panel p {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+}
+
 .section-heading {
   max-width: 48rem;
   margin-bottom: var(--space-4);
 }
 
+.compact-heading {
+  margin-bottom: var(--space-5);
+}
+
 .section-heading p:last-child {
   margin: var(--space-2) 0 0;
+}
+
+.support-panel {
+  padding: var(--space-5);
+}
+
+.support-panel-alert {
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, #faf1df 100%);
+}
+
+.support-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.support-grid h3 {
+  font-size: 1.15rem;
+  line-height: 1.08;
 }
 
 .insights-toolbar,
@@ -1069,6 +1140,11 @@ fieldset.form-group input {
   .hero-grid {
     min-height: auto;
   }
+
+  .workflow-grid,
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1156,7 +1232,9 @@ fieldset.form-group input {
 
   .hero-section,
   .feature-strip,
+  .workflow-section,
   .insights-section,
+  .support-section,
   .services-section,
   .calculator-section,
   .site-footer {

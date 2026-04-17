@@ -29,31 +29,48 @@
         </a>
 
         <nav class="site-nav" aria-label="Primary">
-          <a href="#home">Overview</a>
-          <a href="#services">Services</a>
-          <a href="#calculator">Calculator</a>
+          <a href="#home" data-view-link="home">Overview</a>
+          <a href="#services" data-view-link="services">Services</a>
+          <a href="#calculator" data-view-link="calculator">Calculator</a>
+          <a href="#insights" data-view-link="insights">Insights</a>
         </nav>
 
-        <a href="#calculator" class="button button-primary">Start Estimate</a>
+        <a
+          href="#calculator"
+          class="button button-primary"
+          data-view-link="calculator"
+          >Start Estimate</a
+        >
       </div>
     </header>
 
     <main>
-      <section id="home" class="hero-section">
+      <section
+        id="home"
+        class="hero-section"
+        data-view-section="home"
+        aria-labelledby="home-heading"
+      >
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Freelance pricing assistant</p>
-            <h1>What every freelance web developer should know!</h1>
+            <h1 id="home-heading">What every freelance web developer should know!</h1>
             <p class="hero-text">
               Explore common freelance web services, estimate pricing, and decide
               whether a client project is worth accepting before you commit.
             </p>
 
             <div class="hero-actions">
-              <a href="#services" class="button button-primary"
+              <a
+                href="#services"
+                class="button button-primary"
+                data-view-link="services"
                 >Explore Service Types</a
               >
-              <a href="#calculator" class="button button-secondary"
+              <a
+                href="#calculator"
+                class="button button-secondary"
+                data-view-link="calculator"
                 >Open Calculator</a
               >
             </div>
@@ -61,7 +78,11 @@
         </div>
       </section>
 
-      <section class="feature-strip" aria-label="Core features">
+      <section
+        class="feature-strip"
+        aria-label="Core features"
+        data-view-section="home"
+      >
         <div class="container feature-grid">
           <article class="feature-card">
             <div class="feature-card-header">
@@ -117,9 +138,56 @@
       </section>
 
       <section
+        class="workflow-section"
+        aria-labelledby="workflow-heading"
+        data-view-section="home"
+      >
+        <div class="container">
+          <div class="section-heading compact-heading">
+            <p class="eyebrow">Quick workflow</p>
+            <h2 id="workflow-heading">A simple decision path for freelance leads</h2>
+            <p>
+              Use the app the same way a real freelancer would review a possible
+              project before writing a quote.
+            </p>
+          </div>
+
+          <div class="workflow-grid">
+            <article class="workflow-card">
+              <p class="workflow-step">01</p>
+              <h3>Scan the service type</h3>
+              <p>
+                Compare common project categories, deliverables, and time ranges
+                to identify what the client is really asking for.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <p class="workflow-step">02</p>
+              <h3>Estimate the fit</h3>
+              <p>
+                Use the calculator to pressure-test budget, timeline, revisions,
+                and scope before you commit to a price.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <p class="workflow-step">03</p>
+              <h3>Check live signals</h3>
+              <p>
+                Browse current web topics and trends that may affect demand,
+                client expectations, or service positioning.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
         id="services"
         class="services-section"
         aria-labelledby="services-heading"
+        data-view-section="services"
       >
         <div class="container">
           <div class="section-heading">
@@ -183,9 +251,55 @@
       </section>
 
       <section
+        class="support-section"
+        aria-labelledby="services-guide-heading"
+        data-view-section="services"
+      >
+        <div class="container">
+          <article class="support-panel">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Reading the cards</p>
+              <h2 id="services-guide-heading">How to compare service types quickly</h2>
+              <p>
+                The service view is designed to help you sort client requests into
+                recognizable web project patterns.
+              </p>
+            </div>
+
+            <div class="support-grid">
+              <div>
+                <h3>Start with the base signal</h3>
+                <p>
+                  The starting price and timeline give you a fast benchmark, not a
+                  final quote. Use them to frame the conversation.
+                </p>
+              </div>
+
+              <div>
+                <h3>Watch the scope clues</h3>
+                <p>
+                  Deliverables, complexity, and recommended-fit notes reveal where a
+                  project can grow beyond a simple brochure site.
+                </p>
+              </div>
+
+              <div>
+                <h3>Use details to educate yourself</h3>
+                <p>
+                  Expand a card when you want more context on who the service fits,
+                  what is usually included, and what makes it heavier.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
         id="calculator"
         class="calculator-section"
         aria-labelledby="calculator-heading"
+        data-view-section="calculator"
       >
         <div class="container">
           <div class="section-heading">
@@ -421,7 +535,57 @@
         </div>
       </section>
 
-      <section class="insights-section" aria-labelledby="insights-heading">
+      <section
+        class="support-section"
+        aria-labelledby="calculator-guide-heading"
+        data-view-section="calculator"
+      >
+        <div class="container">
+          <article class="support-panel support-panel-alert">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Risk checks</p>
+              <h2 id="calculator-guide-heading">Three red flags worth slowing down for</h2>
+              <p>
+                The calculator gives you a recommendation, but these warning signs
+                are still worth judging with your own experience.
+              </p>
+            </div>
+
+            <div class="support-grid">
+              <div>
+                <h3>Low budget with high urgency</h3>
+                <p>
+                  If the timeline is rushed and the client budget is already tight,
+                  the project can become stressful and underpaid very quickly.
+                </p>
+              </div>
+
+              <div>
+                <h3>Too many moving parts</h3>
+                <p>
+                  SEO, CMS setup, accessibility, design support, and extra revision
+                  rounds can turn a small project into a bigger engagement.
+                </p>
+              </div>
+
+              <div>
+                <h3>Vague deliverables</h3>
+                <p>
+                  If you cannot describe exactly what will be delivered, you should
+                  tighten the scope before you say yes.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        id="insights"
+        class="insights-section"
+        aria-labelledby="insights-heading"
+        data-view-section="insights"
+      >
         <div class="container">
           <div class="section-heading">
             <h2 id="insights-heading">Live Industry Insights</h2>
@@ -479,6 +643,51 @@
           </div>
         </div>
       </section>
+
+      <section
+        class="support-section"
+        aria-labelledby="insights-guide-heading"
+        data-view-section="insights"
+      >
+        <div class="container">
+          <article class="support-panel">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Why it matters</p>
+              <h2 id="insights-guide-heading">Use trends as context, not instructions</h2>
+              <p>
+                Live articles can help you understand what clients may start asking
+                for, but they should support your pricing judgment, not replace it.
+              </p>
+            </div>
+
+            <div class="support-grid">
+              <div>
+                <h3>Spot changing demand</h3>
+                <p>
+                  Repeated topics around performance, accessibility, SEO, or specific
+                  frameworks can hint at where service demand is growing.
+                </p>
+              </div>
+
+              <div>
+                <h3>Translate trends into offers</h3>
+                <p>
+                  Industry signals become useful when you turn them into clear client
+                  outcomes, packages, or deliverables.
+                </p>
+              </div>
+
+              <div>
+                <h3>Stay selective</h3>
+                <p>
+                  Not every trending topic belongs in your service menu. Use the feed
+                  to inform your thinking, not to chase every new tool.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -493,8 +702,9 @@
 
         <div>
           <p class="footer-heading">Product</p>
-          <a href="#services">Services</a>
-          <a href="#calculator">Calculator</a>
+          <a href="#services" data-view-link="services">Services</a>
+          <a href="#calculator" data-view-link="calculator">Calculator</a>
+          <a href="#insights" data-view-link="insights">Insights</a>
         </div>
 
         <div>

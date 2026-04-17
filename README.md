@@ -130,6 +130,7 @@ The project will include at least three distinct views or sections, such as:
 * Home / Dashboard
 * Services Gallery
 * Pricing Calculator
+* Live Insights
 
 ---
 
@@ -272,20 +273,21 @@ The biggest lesson from this challenge was that responsive design is not solved 
 
 ## Status
 
-The project is in active implementation and polish.
+The project is in active implementation and final rubric alignment.
 
 Completed work so far includes:
 
 * project pitch, user persona, problem definition, and planning documentation
 * low-fidelity wireframes
-* a responsive single-page layout
+* a responsive single-page layout with JS-toggled views
 * a dynamic local service gallery with search, filtering, sorting, and expandable details
 * a pricing and project-fit calculator with custom client-side validation
 * a live industry insights widget powered by the DEV.to API
 * GitHub Pages deployment
+* calculator local storage that restores previous form inputs
 
 Current focus:
 
 * final polish and rubric checks
 * README cleanup and submission readiness
-* possible local storage enhancement as a follow-up feature
+* final interaction polish and submission readiness
