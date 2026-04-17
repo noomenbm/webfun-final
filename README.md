@@ -194,7 +194,7 @@ The fetched widget data may include fields such as:
 
 ## Technical Approach
 
-This project will be built with:
+This project is built with:
 
 * HTML5 semantic structure
 * CSS3 with responsive layout and a consistent design system
@@ -204,9 +204,9 @@ This project will be built with:
 
 ---
 
-## Planned Assignment Alignment
+## Assignment Alignment
 
-This project is designed to satisfy the course requirements by including:
+This project satisfies the course requirements by including:
 
 * a niche audience and clearly defined problem
 * a project pitch in `README.md` before coding
@@ -222,7 +222,9 @@ This project is designed to satisfy the course requirements by including:
 ## Live Links
 
 * **GitHub repository:** https://github.com/noomenbm/webfun-final
-* **Live deployment:** https://noomenbm.github.io/webfun-final/
+* **Current live deployment (GitHub Pages):** https://noomenbm.github.io/webfun-final/
+* **Final Vercel deployment:** to be added after final deployment
+* **Figma wireframe:** https://www.figma.com/proto/ihyT071BriZCjLh3fEEqnk/Freelance-Compass-Wireframe?node-id=2-1600&t=S2ObrFTQrB3kT0fz-1
 
 ---
 
@@ -274,12 +276,12 @@ The biggest lesson from this challenge was that responsive design is not solved 
 
 ## Status
 
-The project is in active implementation and final rubric alignment.
+The project is functionally complete and in final submission polish.
 
-Completed work so far includes:
+Completed work includes:
 
 * project pitch, user persona, problem definition, and planning documentation
-* low-fidelity wireframes
+* low-fidelity wireframes linked through Figma
 * a responsive single-page layout with JS-toggled views
 * a dynamic local service gallery with search, filtering, sorting, and expandable details
 * a pricing and project-fit calculator with custom client-side validation
@@ -289,6 +291,6 @@ Completed work so far includes:
 
 Current focus:
 
-* final polish and rubric checks
-* README cleanup and submission readiness
-* final interaction polish and submission readiness
+* final README cleanup and submission wording
+* final deployment to Vercel
+* any last small polish fixes discovered during final QA
