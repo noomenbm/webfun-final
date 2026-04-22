@@ -98,6 +98,11 @@ function setActiveView(viewName) {
 
   document.body.dataset.activeView = activeView;
   closeMobileNav();
+  window.dispatchEvent(
+    new CustomEvent("freelance-compass:viewchange", {
+      detail: { view: activeView },
+    })
+  );
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 

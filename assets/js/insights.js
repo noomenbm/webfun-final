@@ -36,6 +36,8 @@ const insightTagConfig = {
 let insightsCatalog = [];
 let activeInsightTag = "all";
 let insightsExpanded = false;
+let insightsLoaded = false;
+let insightsLoadInFlight = false;
 
 function setInsightsStatus(message) {
   if (insightsStatus) {
@@ -333,22 +335,33 @@ async function fetchInsightsByTag(tag) {
 }
 
 async function loadIndustryInsights() {
+  if (insightsLoadInFlight) {
+    return;
+  }
+
+  insightsLoadInFlight = true;
   setInsightsStatus("Loading industry insights...");
 
   try {
-    const taggedResponses = await Promise.all(
+    const taggedResponses = await Promise.allSettled(
       insightTagConfig.all.map((tag) => fetchInsightsByTag(tag))
     );
 
     const insightMap = new Map();
 
-    taggedResponses.flat().forEach((article) => {
-      const normalizedArticle = normalizeInsightArticle(article);
-      const mapKey = normalizedArticle.id || normalizedArticle.url;
-
-      if (mapKey && !insightMap.has(mapKey)) {
-        insightMap.set(mapKey, normalizedArticle);
+    taggedResponses.forEach((response) => {
+      if (response.status !== "fulfilled") {
+        return;
       }
+
+      response.value.forEach((article) => {
+        const normalizedArticle = normalizeInsightArticle(article);
+        const mapKey = normalizedArticle.id || normalizedArticle.url;
+
+        if (mapKey && !insightMap.has(mapKey)) {
+          insightMap.set(mapKey, normalizedArticle);
+        }
+      });
     });
 
     insightsCatalog = Array.from(insightMap.values()).sort(
@@ -364,17 +377,39 @@ async function loadIndustryInsights() {
       renderEmptyInsights(
         "The feed returned no articles at the moment. Please try again later."
       );
+      insightsLoaded = false;
       return;
     }
 
+    insightsLoaded = true;
     refreshInsightsView();
   } catch (error) {
     insightsCatalog = [];
+    insightsLoaded = false;
     setInsightsStatus("Industry insights are unavailable right now.");
     renderEmptyInsights(
       "The live feed could not be loaded. Please try again later."
     );
+  } finally {
+    insightsLoadInFlight = false;
   }
+}
+
+function ensureInsightsLoaded(activeView = "") {
+  if (insightsLoaded || insightsLoadInFlight) {
+    return;
+  }
+
+  if (activeView === "insights") {
+    loadIndustryInsights();
+    return;
+  }
+
+  window.setTimeout(() => {
+    if (!insightsLoaded && !insightsLoadInFlight) {
+      loadIndustryInsights();
+    }
+  }, 250);
 }
 
 insightFilterButtons.forEach((button) => {
@@ -391,5 +426,8 @@ insightsToggleButton?.addEventListener("click", () => {
 });
 
 window.addEventListener("resize", refreshInsightsView);
+window.addEventListener("freelance-compass:viewchange", (event) => {
+  ensureInsightsLoaded(event.detail?.view || "");
+});
 
-loadIndustryInsights();
+ensureInsightsLoaded(window.location.hash.replace("#", "").trim().toLowerCase());
