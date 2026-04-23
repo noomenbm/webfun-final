@@ -211,6 +211,18 @@ function formatCurrency(amount) {
   }).format(amount);
 }
 
+function roundQuoteAmount(amount) {
+  if (amount < 1000) {
+    return Math.round(amount / 25) * 25;
+  }
+
+  if (amount < 3000) {
+    return Math.round(amount / 50) * 50;
+  }
+
+  return Math.round(amount / 100) * 100;
+}
+
 function getTimelineValue(timelineText) {
   if (timelineText.toLowerCase() === "ongoing") {
     return Number.POSITIVE_INFINITY;
@@ -531,8 +543,8 @@ function calculateProjectRecommendation(formData) {
     complexityMultipliers[formData.complexity || "basic"] *
     timelineMultipliers[formData.timelineUrgency || "flexible"];
 
-  const estimatedMin = Math.round(adjustedPrice * 0.92);
-  const estimatedMax = Math.round(adjustedPrice * 1.12);
+  const estimatedMin = roundQuoteAmount(adjustedPrice * 0.92);
+  const estimatedMax = roundQuoteAmount(adjustedPrice * 1.12);
 
   let budgetAssessment = "The budget appears workable for this scope.";
   let timelineAssessment = "The current timeline looks manageable.";
